@@ -2,7 +2,7 @@
 
 ## Version
 
-- Spec version: `0.7.0`
+- Spec version: `0.7.5`
 - Updated: `2026-03-09`
 
 ## Purpose
@@ -24,9 +24,10 @@ The workbook generates Word-based certificates for military personnel from Excel
 
 ### Data handling
 
-- Source imports are normalized into a fixed `ImportedData` layout by header matching instead of relying on source column positions.
-- The import supports both a single `Full Name` column and split `Surname` / `Name` / `Patronymic` columns.
-- The import automatically detects personal number, birth date, and military unit / department headers from the source worksheet.
+- Source import is intentionally fast: the first worksheet from the selected workbook is copied into `ImportedData` without full normalization during import.
+- Personnel search now performs smart header-based column detection on top of the copied `ImportedData` sheet.
+- The search supports both a single `Full Name` column and split `Surname` / `Name` / `Patronymic` columns.
+- The search detects separate text and numeric `Лицо` columns to distinguish full name from table number.
 - Search results are bound to source row numbers instead of parsing display strings.
 - Unit values preserve text-based designations instead of stripping them down to digits.
 - Certificate recipient names are declined through `UDFs_FIO.FIO(..., "D")` with fallback to `DativeCase`.
@@ -38,6 +39,7 @@ The workbook generates Word-based certificates for military personnel from Excel
 - Template folder is selected through ribbon and persisted as a workbook-level text setting: `FILE_WORD`.
 - Template list can be migrated from a legacy named range into a workbook-level text setting: `FILE_TEMPLATE`.
 - Existing output files are preserved; new files receive unique names when needed.
+- Snapshot workbooks are saved in the workbook directory using only the current date as the file name base.
 - Missing placeholder warnings are suppressed in the completion message because partial placeholder sets are expected.
 - `IssuedDocumentsLog` rows are formatted on write with `Times New Roman`, `12 pt`, thin borders, a readable datetime format for `Created On`, bold wrapped headers, auto-filter, and fixed widths for key columns.
 
@@ -82,13 +84,7 @@ The workbook generates Word-based certificates for military personnel from Excel
 ### Worksheets
 
 - `data`: main operator worksheet
-- `ImportedData`: imported personnel data
-- `ImportedData` now stores a normalized layout:
-  - `Source Row`
-  - `Personal Number`
-  - `Full Name`
-  - `Date of Birth`
-  - `Military Unit`
+- `ImportedData`: raw imported personnel data from the selected source workbook
 - `IssuedDocumentsLog`: generation history
 - `ЧтоНового`: informational worksheet
 
@@ -97,3 +93,4 @@ The former `const` / `Settings` worksheet is being retired. Configuration is mov
 ## Current Limitation
 
 - The workbook source files now support removing the visible `Settings` sheet, but the live workbook still needs to be synced through `VbaModuleManager` before the sheet can be safely deleted.
+- Smart search depends on recognizable source headers for full name, table number, personal number, birth date, and unit fields.
