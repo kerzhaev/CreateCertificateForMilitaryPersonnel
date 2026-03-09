@@ -2,7 +2,7 @@
 
 ## Version
 
-- Spec version: `0.6.1`
+- Spec version: `0.6.2`
 - Updated: `2026-03-09`
 
 ## Purpose
@@ -36,7 +36,7 @@ The workbook generates Word-based certificates for military personnel from Excel
 - Template list can be migrated from a legacy named range into a workbook-level text setting: `FILE_TEMPLATE`.
 - Existing output files are preserved; new files receive unique names when needed.
 - Missing placeholder warnings are suppressed in the completion message because partial placeholder sets are expected.
-- `IssuedDocumentsLog` rows are formatted on write with `Times New Roman`, `12 pt`, thin borders, and a readable datetime format for `Created On`.
+- `IssuedDocumentsLog` rows are formatted on write with `Times New Roman`, `12 pt`, thin borders, a readable datetime format for `Created On`, bold wrapped headers, auto-filter, and fixed widths for key columns.
 
 ### UI
 

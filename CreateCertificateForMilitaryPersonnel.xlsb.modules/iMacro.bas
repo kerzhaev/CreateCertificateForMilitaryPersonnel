@@ -2,7 +2,7 @@ Attribute VB_Name = "iMacro"
 
 Option Explicit
 
-' Version: 0.6.1
+' Version: 0.6.2
 
 ' Updated: 2026-03-09
 
@@ -626,17 +626,27 @@ Private Function SaveDataToHistorySheet(ByVal wsData As Worksheet, ByVal process
 
     ApplyHistorySheetFormatting wsHistory, lastHistoryRow, dataWidth + 4
 
-    wsHistory.Columns.AutoFit
-
 End Function
 
 Private Sub ApplyHistorySheetFormatting(ByVal wsHistory As Worksheet, ByVal lastHistoryRow As Long, ByVal lastHistoryCol As Long)
 
     Dim targetRange As Range
 
+    Dim headerRange As Range
+
+    Dim dataRange As Range
+
     If lastHistoryRow < 1 Or lastHistoryCol < 1 Then Exit Sub
 
     Set targetRange = wsHistory.Range(wsHistory.Cells(1, 1), wsHistory.Cells(lastHistoryRow, lastHistoryCol))
+
+    Set headerRange = wsHistory.Range(wsHistory.Cells(1, 1), wsHistory.Cells(1, lastHistoryCol))
+
+    If lastHistoryRow > 1 Then
+
+        Set dataRange = wsHistory.Range(wsHistory.Cells(2, 1), wsHistory.Cells(lastHistoryRow, lastHistoryCol))
+
+    End If
 
     With targetRange
 
@@ -644,11 +654,53 @@ Private Sub ApplyHistorySheetFormatting(ByVal wsHistory As Worksheet, ByVal last
 
         .Font.Size = HISTORY_FONT_SIZE
 
+        .VerticalAlignment = xlTop
+
         .Borders.LineStyle = xlContinuous
 
         .Borders.Weight = xlThin
 
     End With
+
+    With headerRange
+
+        .Font.Bold = True
+
+        .WrapText = True
+
+        .HorizontalAlignment = xlCenter
+
+        .VerticalAlignment = xlCenter
+
+    End With
+
+    If Not dataRange Is Nothing Then
+
+        dataRange.WrapText = True
+
+    End If
+
+    If wsHistory.AutoFilterMode Then
+
+        wsHistory.AutoFilterMode = False
+
+    End If
+
+    headerRange.AutoFilter
+
+    wsHistory.Columns(1).ColumnWidth = 8
+
+    wsHistory.Columns(2).ColumnWidth = 18
+
+    wsHistory.Columns(3).ColumnWidth = 32
+
+    wsHistory.Columns(4).ColumnWidth = 24
+
+    If lastHistoryCol >= 5 Then
+
+        wsHistory.Range(wsHistory.Cells(1, 5), wsHistory.Cells(lastHistoryRow, lastHistoryCol)).Columns.AutoFit
+
+    End If
 
     wsHistory.Columns(2).NumberFormat = "dd.mm.yyyy hh:mm"
 
