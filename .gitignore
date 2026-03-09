@@ -1,7 +1,12 @@
 ~$*.xls*
+~$*.doc*
 Result/
 Certificates_*.xlsx
+20??-??-??*.xlsx
 *.backup.*.xlsb
 *.broken.*.xlsb
 *.ribbonsafe.*.xlsb
 ГотовыеСправки/
+*.tmp
+Thumbs.db
+Desktop.ini
