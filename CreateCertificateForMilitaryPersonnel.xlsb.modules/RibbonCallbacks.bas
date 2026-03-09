@@ -1,6 +1,6 @@
 Attribute VB_Name = "RibbonCallbacks"
 Option Explicit
-' Version: 0.5.0
+' Version: 0.6.0
 ' Updated: 2026-03-09
 
 Private pRibbon As IRibbonUI
@@ -27,6 +27,10 @@ End Sub
 
 Public Sub RibbonSelectTemplateFolder(ByVal control As IRibbonControl)
     SelectTemplateFolder
+End Sub
+
+Public Sub RibbonSelectTemplates(ByVal control As IRibbonControl)
+    OpenTemplateManager
 End Sub
 
 Public Sub RibbonSelectOutputFolder(ByVal control As IRibbonControl)

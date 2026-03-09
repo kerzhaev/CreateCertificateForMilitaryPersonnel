@@ -2,7 +2,7 @@ Attribute VB_Name = "iMacro"
 
 Option Explicit
 
-' Version: 0.5.2
+' Version: 0.6.0
 
 ' Updated: 2026-03-09
 
@@ -76,6 +76,47 @@ Public Sub OpenHistorySheet()
     GetHistoryWorksheet.Activate
 
 End Sub
+Public Sub OpenTemplateManager()
+    Dim templateFolder As String
+
+    On Error Resume Next
+    templateFolder = GetTemplateFolderSetting()
+    On Error GoTo 0
+
+    If Len(templateFolder) = 0 Then
+        SelectTemplateFolder
+        On Error Resume Next
+        templateFolder = GetTemplateFolderSetting()
+        On Error GoTo 0
+        If Len(templateFolder) = 0 Then Exit Sub
+    End If
+
+    Load UserForm1
+
+    With UserForm1
+        .StartUpPosition = 0
+        .Top = Application.Top + (Application.Height / 2 - .Height / 2)
+        .Left = Application.Left + (Application.Width / 2 - .Width / 2)
+        .Show
+    End With
+End Sub
+
+Public Function GetTemplateFolderSetting() As String
+    On Error Resume Next
+    GetTemplateFolderSetting = GetFolderPath(FILE_WORD_RANGE_NAME)
+    On Error GoTo 0
+End Function
+
+Public Function GetTemplateCatalogSetting() As String
+    On Error Resume Next
+    GetTemplateCatalogSetting = GetConfiguredTextSetting(FILE_TEMPLATE_RANGE_NAME)
+    On Error GoTo 0
+End Function
+
+Public Sub SaveTemplateCatalogSetting(ByVal templateList As String)
+    SaveStoredTextSetting FILE_TEMPLATE_RANGE_NAME, templateList
+End Sub
+
 Public Sub SelectTemplateFolder()
     Dim currentFolder As String
     Dim selectedFolder As String
@@ -140,8 +181,6 @@ Public Sub CreateDoc()
     On Error GoTo HandleError
 
     Set dataSheet = GetDataWorksheet()
-
-    ValidateTemplatePickerRange
 
     templateFolder = GetFolderPath(FILE_WORD_RANGE_NAME)
 
@@ -800,19 +839,6 @@ Private Function TryGetWorksheet(ByVal sheetName As String) As Worksheet
 
 End Function
 
-Private Sub ValidateTemplatePickerRange()
-
-    Dim configuredTemplates As String
-
-    configuredTemplates = GetConfiguredTextSetting(FILE_TEMPLATE_RANGE_NAME)
-
-    If Len(configuredTemplates) = 0 Then
-
-        Err.Raise vbObjectError + 1001, "ValidateTemplatePickerRange", "Named range '" & FILE_TEMPLATE_RANGE_NAME & "' is empty."
-
-    End If
-
-End Sub
 
 Private Function GetFolderPath(ByVal rangeName As String) As String
 

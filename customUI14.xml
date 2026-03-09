@@ -40,6 +40,12 @@
                   showImage="true"
                   showLabel="true"
                   onAction="RibbonSelectTemplateFolder"/>
+          <button id="btnSelectTemplates"
+                  label="Select Templates"
+                  imageMso="FileOpen"
+                  showImage="true"
+                  showLabel="true"
+                  onAction="RibbonSelectTemplates"/>
           <button id="btnSelectOutputFolder"
                   label="Output Folder"
                   imageMso="FileSaveAs"

@@ -2,7 +2,7 @@
 
 ## Version
 
-- Spec version: `0.5`
+- Spec version: `0.6`
 - Updated: `2026-03-09`
 
 ## Purpose
@@ -47,8 +47,19 @@ The workbook generates Word-based certificates for military personnel from Excel
   - `Import Source Data`
   - `Open History`
   - `Template Folder`
+  - `Select Templates`
   - `Output Folder`
   - `About`
+
+### Template configuration
+
+- The template folder path is selected from the ribbon and stored in `FILE_WORD`.
+- The template catalog is stored in `FILE_TEMPLATE` as a semicolon-delimited list.
+- `UserForm1` now acts as a template manager:
+  - it reads available `.docx` files from the configured template folder;
+  - it preselects templates already stored in `FILE_TEMPLATE`;
+  - it saves the selected catalog back into `FILE_TEMPLATE`.
+- Generation no longer depends on `FILE_TEMPLATE` being populated because actual row processing uses column 3 from the `data` sheet.
 
 ### Maintainability
 
@@ -73,11 +84,6 @@ The workbook generates Word-based certificates for military personnel from Excel
 
 The former `const` / `Settings` worksheet is being retired. Configuration is moving to workbook-level text settings so the workbook no longer depends on a visible settings sheet.
 
-## Known Next Step
+## Current Limitation
 
-The next planned enhancement is a ribbon-driven template selection UI:
-
-- Add a ribbon command for template selection.
-- Show available `.docx` files from the configured template folder.
-- Save selected templates back into `FILE_TEMPLATE`.
-- Remove the need to edit `FILE_TEMPLATE` through Name Manager.
+- The workbook source files now support removing the visible `Settings` sheet, but the live workbook still needs to be synced through `VbaModuleManager` before the sheet can be safely deleted.
