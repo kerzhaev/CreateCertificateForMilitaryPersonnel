@@ -2,7 +2,7 @@ Attribute VB_Name = "iMacro"
 
 Option Explicit
 
-' Version: 0.6.0
+' Version: 0.6.1
 
 ' Updated: 2026-03-09
 
@@ -39,6 +39,10 @@ Private Const LEGACY_HISTORY_SHEET_NAME As String = "БазаВыдСпр"
 Private Const SUMMARY_FILE_PREFIX As String = "Certificates_"
 
 Private Const HISTORY_HEADER_ROW As Long = 1
+
+Private Const HISTORY_FONT_NAME As String = "Times New Roman"
+
+Private Const HISTORY_FONT_SIZE As Long = 12
 
 Public AppWord As Object
 
@@ -620,9 +624,35 @@ Private Function SaveDataToHistorySheet(ByVal wsData As Worksheet, ByVal process
 
     Next dataRow
 
+    ApplyHistorySheetFormatting wsHistory, lastHistoryRow, dataWidth + 4
+
     wsHistory.Columns.AutoFit
 
 End Function
+
+Private Sub ApplyHistorySheetFormatting(ByVal wsHistory As Worksheet, ByVal lastHistoryRow As Long, ByVal lastHistoryCol As Long)
+
+    Dim targetRange As Range
+
+    If lastHistoryRow < 1 Or lastHistoryCol < 1 Then Exit Sub
+
+    Set targetRange = wsHistory.Range(wsHistory.Cells(1, 1), wsHistory.Cells(lastHistoryRow, lastHistoryCol))
+
+    With targetRange
+
+        .Font.Name = HISTORY_FONT_NAME
+
+        .Font.Size = HISTORY_FONT_SIZE
+
+        .Borders.LineStyle = xlContinuous
+
+        .Borders.Weight = xlThin
+
+    End With
+
+    wsHistory.Columns(2).NumberFormat = "dd.mm.yyyy hh:mm"
+
+End Sub
 
 Private Sub EnsureHistoryHeaders(ByVal wsHistory As Worksheet, ByVal wsData As Worksheet, ByVal lastDataCol As Long)
 
