@@ -14,6 +14,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 Option Explicit
 ' Version: 0.6.0
 ' Updated: 2026-03-09
@@ -40,11 +41,11 @@ Private Sub LoadTemplateCatalog()
 
     templateFolder = GetTemplateFolderSetting()
     storedSelection = GetTemplateCatalogSetting()
-    templateFileName = Dir$(templateFolder & TEMPLATE_MASK)
+    templateFileName = dir$(templateFolder & TEMPLATE_MASK)
 
     Do While Len(templateFileName) > 0
         ListBox1.AddItem NormalizeTemplateEntry(templateFileName)
-        templateFileName = Dir$
+        templateFileName = dir$
     Loop
 
     If ListBox1.ListCount = 0 Then
