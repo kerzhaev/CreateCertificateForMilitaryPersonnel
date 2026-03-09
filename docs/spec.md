@@ -2,7 +2,7 @@
 
 ## Version
 
-- Spec version: `0.6.2`
+- Spec version: `0.7.0`
 - Updated: `2026-03-09`
 
 ## Purpose
@@ -24,6 +24,9 @@ The workbook generates Word-based certificates for military personnel from Excel
 
 ### Data handling
 
+- Source imports are normalized into a fixed `ImportedData` layout by header matching instead of relying on source column positions.
+- The import supports both a single `Full Name` column and split `Surname` / `Name` / `Patronymic` columns.
+- The import automatically detects personal number, birth date, and military unit / department headers from the source worksheet.
 - Search results are bound to source row numbers instead of parsing display strings.
 - Unit values preserve text-based designations instead of stripping them down to digits.
 - Certificate recipient names are declined through `UDFs_FIO.FIO(..., "D")` with fallback to `DativeCase`.
@@ -80,6 +83,12 @@ The workbook generates Word-based certificates for military personnel from Excel
 
 - `data`: main operator worksheet
 - `ImportedData`: imported personnel data
+- `ImportedData` now stores a normalized layout:
+  - `Source Row`
+  - `Personal Number`
+  - `Full Name`
+  - `Date of Birth`
+  - `Military Unit`
 - `IssuedDocumentsLog`: generation history
 - `ЧтоНового`: informational worksheet
 
