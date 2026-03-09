@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSearch 
-   Caption         =   "Поиск ..."
+   Caption         =   "Search..."
    ClientHeight    =   3015
    ClientLeft      =   120
    ClientTop       =   465
@@ -13,135 +13,113 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
+Option Explicit
+' Version: 0.4.1
+' Updated: 2026-03-09
+
+Private Const MIN_SEARCH_LENGTH As Long = 3
+Private Const DISPLAY_SEPARATOR As String = " - "
+
+Private Sub UserForm_Initialize()
+    ListBox1.ColumnCount = 2
+    ListBox1.ColumnWidths = "0 pt;340 pt"
+End Sub
+
 Private Sub TextBox1_Change()
     Dim searchValue As String
-    searchValue = TextBox1.Value
 
-    ' Активировать поиск, если введено три или более символов
-    If Len(searchValue) >= 3 Then
+    searchValue = Trim$(TextBox1.Value)
+
+    If Len(searchValue) >= MIN_SEARCH_LENGTH Then
         PerformSearch searchValue
     Else
-        ListBox1.Clear ' Очистить результаты поиска, если символов меньше трех
+        ListBox1.Clear
     End If
 End Sub
-
-'Private Sub PerformSearch(ByVal searchValue As String)
-'    Dim ws As Worksheet
-'    Set ws = ThisWorkbook.Sheets("Выгрузка")
-'    Dim lastRow As Long
-'    lastRow = ws.Cells(ws.Rows.Count, 3).End(xlUp).Row
-'
-'    ListBox1.Clear ' Очистка ListBox перед поиском
-'
-'    Dim i As Long
-'    For i = 1 To lastRow
-'        If LCase(Trim(ws.Cells(i, 3).Value)) Like "*" & LCase(Trim(searchValue)) & "*" Then
-'            ListBox1.AddItem ws.Cells(i, 1).Value & " - " & ws.Cells(i, 3).Value & " - " & ws.Cells(i, 4).Value
-'        End If
-'    Next i
-'End Sub
-
-
-
-'Private Sub PerformSearch(ByVal searchValue As String)
-'    Dim ws As Worksheet
-'    Set ws = ThisWorkbook.Sheets("Выгрузка")
-'
-'    Dim lastRow As Long
-'    lastRow = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row
-'
-'    ListBox1.Clear ' Очищаем список перед новым поиском
-'
-'    Dim i As Long, j As Long
-'    For i = 2 To lastRow ' Предполагаем, что первая строка содержит заголовки
-'        For j = 1 To ws.Columns.Count ' Перебираем все столбцы
-'            If InStr(1, ws.Cells(i, j).Value, searchValue, vbTextCompare) > 0 Then
-'                ' Добавление результатов в ListBox, включая значение из 21-го столбца
-'                ListBox1.AddItem ws.Cells(i, 2).Value & " - " & ws.Cells(i, 3).Value & " - " & ws.Cells(i, 4).Value & " - " & ws.Cells(i, 21).Value
-'                Exit For ' Прекращаем поиск в текущей строке после первого совпадения
-'            End If
-'        Next j
-'    Next i
-'End Sub
-
 
 Private Sub PerformSearch(ByVal searchValue As String)
-    ' Запускаем поиск только если в строке поиска есть минимум 3 символа
-    If Len(searchValue) < 3 Then
-        ListBox1.Clear
-        Exit Sub
-    End If
-
     Dim ws As Worksheet
-    Set ws = ThisWorkbook.Sheets("Выгрузка")
-
     Dim lastRow As Long
+    Dim rowIndex As Long
+    Dim columnIndex As Long
+
+    Set ws = GetImportedDataWorksheet()
     lastRow = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row
 
-    ListBox1.Clear ' Очищаем список перед новым поиском
+    ListBox1.Clear
 
-    Dim i As Long, j As Long
-    For i = 2 To lastRow ' Предполагаем, что первая строка содержит заголовки
-        For j = 2 To 5 ' Ограничиваем поиск столбцами 2, 3, 4 и 5
-            If InStr(1, ws.Cells(i, j).Value, searchValue, vbTextCompare) > 0 Then
-                ' Добавляем результаты в ListBox
-                ListBox1.AddItem ws.Cells(i, 2).Value & " - " & ws.Cells(i, 3).Value & " - " & ws.Cells(i, 4).Value & " - " & ws.Cells(i, 5).Value & " - " & ws.Cells(i, 21).Value
-                Exit For ' Прекращаем поиск в текущей строке после первого совпадения
+    For rowIndex = 2 To lastRow
+        For columnIndex = 2 To 5
+            If InStr(1, CStr(ws.Cells(rowIndex, columnIndex).Value), searchValue, vbTextCompare) > 0 Then
+                AddSearchItem rowIndex, BuildDisplayValue(ws, rowIndex)
+                Exit For
             End If
-        Next j
-    Next i
+        Next columnIndex
+    Next rowIndex
 End Sub
 
+Private Sub AddSearchItem(ByVal sourceRow As Long, ByVal displayValue As String)
+    Dim itemIndex As Long
 
+    ListBox1.AddItem CStr(sourceRow)
+    itemIndex = ListBox1.ListCount - 1
+    ListBox1.List(itemIndex, 1) = displayValue
+End Sub
 
-
-
-
-
-
-
-
-
-
+Private Function BuildDisplayValue(ByVal ws As Worksheet, ByVal rowIndex As Long) As String
+    BuildDisplayValue = CStr(ws.Cells(rowIndex, 2).Value) & DISPLAY_SEPARATOR & _
+        CStr(ws.Cells(rowIndex, 3).Value) & DISPLAY_SEPARATOR & _
+        CStr(ws.Cells(rowIndex, 4).Value) & DISPLAY_SEPARATOR & _
+        CStr(ws.Cells(rowIndex, 5).Value) & DISPLAY_SEPARATOR & _
+        CStr(ws.Cells(rowIndex, 21).Value)
+End Function
 
 Private Sub ListBox1_Click()
-    Dim selectedValue As String
-    selectedValue = ListBox1.Value
+    Dim sourceRow As Long
 
-    ' Извлекаем только значение из третьего столбца из выбранной строки
-    Dim valueParts As Variant
-    valueParts = Split(selectedValue, " - ")
-    If UBound(valueParts) >= 2 Then
-        selectedValue = valueParts(1) ' значение из третьего столбца
-    Else
-        Exit Sub ' Если формат строки не соответствует ожидаемому, выходим из процедуры
-    End If
+    On Error GoTo HandleError
 
-    Dim ws As Worksheet
-    Set ws = ThisWorkbook.Sheets("Выгрузка")
+    If ListBox1.ListIndex < 0 Then Exit Sub
 
-    ' Находим строку в листе "Выгрузка", соответствующую выбранному значению
-    Dim lastRow As Long, i As Long
-    lastRow = ws.Cells(ws.Rows.Count, 3).End(xlUp).Row
+    sourceRow = CLng(ListBox1.List(ListBox1.ListIndex, 0))
+    CopySelectionToDataSheet sourceRow
+    Unload Me
+    Exit Sub
 
-    For i = 1 To lastRow
-        If ws.Cells(i, 3).Value = valueParts(1) Then
-            ' Вставляем значения в лист "data"
-            Dim targetSheet As Worksheet
-            Set targetSheet = ThisWorkbook.Sheets("data")
-            With targetSheet
-                .Cells(Application.ActiveCell.Row, 4).Value = selectedValue ' Вставляем выбранное значение в 4-й столбец
-                .Cells(Application.ActiveCell.Row, 5).Value = ws.Cells(i, 2).Value ' значение из второго столбца
-                .Cells(Application.ActiveCell.Row, 6).Value = ws.Cells(i, 4).Value ' значение из четвертого столбца
-                .Cells(Application.ActiveCell.Row, 7).Value = "'" & ExtractNumbers(ws.Cells(i, 21).Value) ' значение из двадцать первого столбца
-            End With
-            Exit For
-        End If
-    Next i
-
-    Unload Me ' Закрытие формы
+HandleError:
+    MsgBox "Unable to copy the selected row: " & Err.Description, vbCritical, "Search error"
 End Sub
 
+Private Sub CopySelectionToDataSheet(ByVal sourceRow As Long)
+    Dim sourceSheet As Worksheet
+    Dim targetSheet As Worksheet
+    Dim targetRow As Long
 
+    Set sourceSheet = GetImportedDataWorksheet()
+    Set targetSheet = GetDataWorksheet()
+    targetRow = GetActiveDataRow(targetSheet)
 
+    With targetSheet
+        .Cells(targetRow, 4).Value = CStr(sourceSheet.Cells(sourceRow, 3).Value)
+        .Cells(targetRow, 5).Value = CStr(sourceSheet.Cells(sourceRow, 2).Value)
+        .Cells(targetRow, 6).Value = CStr(sourceSheet.Cells(sourceRow, 4).Value)
+        .Cells(targetRow, 7).Value = NormalizeUnitValue(CStr(sourceSheet.Cells(sourceRow, 21).Value))
+    End With
+End Sub
 
+Private Function GetActiveDataRow(ByVal targetSheet As Worksheet) As Long
+    If TypeName(Selection) <> "Range" Then
+        Err.Raise vbObjectError + 2000, "GetActiveDataRow", "Select a target row on the 'data' sheet first."
+    End If
+
+    If Not Application.ActiveCell.Parent Is targetSheet Then
+        Err.Raise vbObjectError + 2001, "GetActiveDataRow", "Select a target row on the 'data' sheet first."
+    End If
+
+    If Application.ActiveCell.Row < 2 Then
+        Err.Raise vbObjectError + 2002, "GetActiveDataRow", "Select a data row below the header."
+    End If
+
+    GetActiveDataRow = Application.ActiveCell.Row
+End Function

@@ -1,0 +1,37 @@
+Option Explicit
+' Version: 0.4.1
+' Updated: 2026-03-09
+
+Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean)
+    If Target.Row < 2 Then Exit Sub
+    If Target.Column <> 4 Then Exit Sub
+
+    Cancel = True
+    OpenSearchForm
+End Sub
+
+Private Sub Worksheet_Change(ByVal Target As Range)
+    Dim cell As Range
+
+    On Error GoTo CleanUp
+    Application.EnableEvents = False
+
+    For Each cell In Target.Cells
+        If Not Intersect(cell, Me.Columns(4)) Is Nothing Then
+            If cell.Row > 1 Then
+                If Len(CStr(cell.Value)) = 0 Then
+                    cell.Offset(0, 1).ClearContents
+                    cell.Offset(0, 2).ClearContents
+                    cell.Offset(0, 3).ClearContents
+                    cell.Offset(0, 4).ClearContents
+                Else
+                    Me.Cells(cell.Row, 2).FormulaR1C1 = "=RC[2]&" - "&RC[6]&" "&TEXT(TODAY(),"dd.mm.yyyy")"
+                    Me.Cells(cell.Row, 3).FormulaR1C1 = "=RC[5]"
+                End If
+            End If
+        End If
+    Next cell
+
+CleanUp:
+    Application.EnableEvents = True
+End Sub

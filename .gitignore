@@ -1,2 +1,5 @@
 ~$*.xls*
 Result/
+Certificates_*.xlsx
+*.backup.*.xlsb
+ГотовыеСправки/

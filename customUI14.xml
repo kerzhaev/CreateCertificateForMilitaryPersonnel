@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="RibbonOnLoad">
+  <ribbon>
+    <tabs>
+      <tab id="tabCertificates" label="Certificates">
+        <group id="grpCertificatesRun" label="Certificates">
+          <button id="btnGenerateCertificates"
+                  label="Generate"
+                  size="large"
+                  imageMso="FileSaveAs"
+                  showImage="true"
+                  showLabel="true"
+                  onAction="RibbonGenerateCertificates"/>
+          <button id="btnOpenSearch"
+                  label="Search Person"
+                  size="large"
+                  imageMso="FindDialog"
+                  showImage="true"
+                  showLabel="true"
+                  onAction="RibbonOpenSearch"/>
+        </group>
+        <group id="grpCertificatesData" label="Data">
+          <button id="btnImportSourceData"
+                  label="Import Source Data"
+                  imageMso="FileOpen"
+                  showImage="true"
+                  showLabel="true"
+                  onAction="RibbonImportSourceData"/>
+          <button id="btnOpenHistory"
+                  label="Open History"
+                  imageMso="FileOpen"
+                  showImage="true"
+                  showLabel="true"
+                  onAction="RibbonOpenHistory"/>
+        </group>
+        <group id="grpCertificatesFolders" label="Folders">
+          <button id="btnSelectTemplateFolder"
+                  label="Template Folder"
+                  imageMso="FileOpen"
+                  showImage="true"
+                  showLabel="true"
+                  onAction="RibbonSelectTemplateFolder"/>
+          <button id="btnSelectOutputFolder"
+                  label="Output Folder"
+                  imageMso="FileSaveAs"
+                  showImage="true"
+                  showLabel="true"
+                  onAction="RibbonSelectOutputFolder"/>
+        </group>
+        <group id="grpCertificatesHelp" label="Help">
+          <button id="btnShowAbout"
+                  label="About"
+                  imageMso="HappyFace"
+                  showImage="true"
+                  showLabel="true"
+                  onAction="RibbonShowAbout"/>
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

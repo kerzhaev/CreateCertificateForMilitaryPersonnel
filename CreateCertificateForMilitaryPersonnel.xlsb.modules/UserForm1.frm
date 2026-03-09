@@ -14,54 +14,87 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
+
+
+
+
+
+
 ''''''''''''''''''''''''''''''''''''''
+
 'Разработка макроса: excelstore.pro
+
 'E-mail для связи: info@excelstore.pro
+
 ''''''''''''''''''''''''''''''''''''''
-
-
 
 Option Explicit
 
+' Version: 0.4.1
+
+' Updated: 2026-03-09
 
 Private Sub UserForm_Activate()
-    Dim iArray, i As Integer
-    iArray = Split(Range("FILE_TEMPLATE").Value, ";", , vbTextCompare)
-    For i = 0 To UBound(iArray)
-        ListBox1.AddItem (iArray(i))
-    Next i
-End Sub
 
+    Dim iArray, i As Integer
+
+    iArray = Split(Range("FILE_TEMPLATE").Value, ";", , vbTextCompare)
+
+    For i = 0 To UBound(iArray)
+
+        ListBox1.AddItem (iArray(i))
+
+    Next i
+
+End Sub
 
 Private Sub ListBox1_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
-    Dim i As Integer
-    For i = 0 To ListBox1.ListCount - 1
-        If ListBox1.Selected(i) = True Then ActiveCell.Value = ListBox1.List(i)
-    Next i
-    Unload Me
-End Sub
 
+    Dim i As Integer
+
+    For i = 0 To ListBox1.ListCount - 1
+
+        If ListBox1.Selected(i) = True Then ActiveCell.Value = ListBox1.List(i)
+
+    Next i
+
+    Unload Me
+
+End Sub
 
 Private Sub cbEnter_Click()
-    Dim iSTR As String, i As Integer
-    For i = 0 To ListBox1.ListCount - 1
-        If ListBox1.Selected(i) = True Then iSTR = iSTR & ListBox1.List(i) & ";"
-    Next i
-    If iSTR = "" Then
-        ActiveCell.Value = ""
-    Else
-        ActiveCell.Value = Left(iSTR, Len(iSTR) - 1)
-    End If
-    Unload Me
-End Sub
 
+    Dim iSTR As String, i As Integer
+
+    For i = 0 To ListBox1.ListCount - 1
+
+        If ListBox1.Selected(i) = True Then iSTR = iSTR & ListBox1.List(i) & ";"
+
+    Next i
+
+    If iSTR = "" Then
+
+        ActiveCell.Value = ""
+
+    Else
+
+        ActiveCell.Value = Left(iSTR, Len(iSTR) - 1)
+
+    End If
+
+    Unload Me
+
+End Sub
 
 Private Sub cbCancel_Click()
-    Unload Me
-End Sub
 
+    Unload Me
+
+End Sub
 
 Private Sub UserForm_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If KeyCode = vbKeyEscape Then Unload Me
-End Sub
 
+    If KeyCode = vbKeyEscape Then Unload Me
+
+End Sub

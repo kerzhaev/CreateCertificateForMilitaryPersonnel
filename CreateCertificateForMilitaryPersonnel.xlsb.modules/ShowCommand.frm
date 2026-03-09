@@ -14,28 +14,46 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+
+
+
+
+
+
+Option Explicit
+
+' Version: 0.4.1
+
+' Updated: 2026-03-09
+
 Private Sub btnImportData_Click()
+
     CreateAndImportDataSheet
+
     Unload Me
+
 End Sub
 
 Private Sub btnSaveData_Click()
+
     CreateDoc
-    
+
     Unload Me
+
 End Sub
-
-
-
 
 Private Sub UserForm_Initialize()
 
     ' Центрирование формы на экране
-    With Me
-        .StartUpPosition = 0 ' Используем ручное позиционирование
-        .Left = Application.Left + (Application.Width - .Width) / 2
-        .Top = Application.Top + (Application.Height - .Height) / 2
-    End With
 
+    With Me
+
+        .StartUpPosition = 0 ' Используем ручное позиционирование
+
+        .Left = Application.Left + (Application.Width - .Width) / 2
+
+        .Top = Application.Top + (Application.Height - .Height) / 2
+
+    End With
 
 End Sub

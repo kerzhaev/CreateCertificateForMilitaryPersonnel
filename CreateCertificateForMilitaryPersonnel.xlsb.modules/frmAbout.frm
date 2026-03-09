@@ -18,10 +18,23 @@ Attribute VB_Exposed = False
 
 
 
+
+
+
+Option Explicit
+
+' Version: 0.4.1
+
+' Updated: 2026-03-09
+
 Private Sub CommandButton1_Click()
+
  Unload Me
+
 End Sub
 
 Private Sub UserForm_Deactivate()
+
     Unload Me
+
 End Sub
